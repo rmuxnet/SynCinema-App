@@ -14,9 +14,10 @@ class _MovieListScreenState extends State<MovieListScreen> {
   bool isLoading = true;
 
   final Color bgBlack = Colors.black;
-  final Color cardBg = const Color(0xFF1F2937);
+  final Color cardBg = Colors.black;
   final Color accentStart = const Color(0xFF2563EB);
   final Color accentEnd = const Color(0xFF4F46E5);
+  final Color borderColor = Colors.white.withOpacity(0.15);
 
   @override
   void initState() {
@@ -43,7 +44,6 @@ class _MovieListScreenState extends State<MovieListScreen> {
         elevation: 0,
         title: Row(
           children: [
-            // Mini Logo
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
@@ -90,7 +90,6 @@ class _MovieListScreenState extends State<MovieListScreen> {
   }
 
   Widget _buildMovieCard(String filename) {
-    // Clean up filename for display (remove dots, extensions)
     String displayName = filename.replaceAll('.', ' ').replaceAll('mp4', '').replaceAll('mkv', '').trim();
     
     return Container(
@@ -98,14 +97,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
       decoration: BoxDecoration(
         color: cardBg,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.5),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(color: borderColor, width: 1), 
       ),
       child: Material(
         color: Colors.transparent,
@@ -121,7 +113,6 @@ class _MovieListScreenState extends State<MovieListScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                // Icon / Thumbnail Placeholder
                 Container(
                   width: 50,
                   height: 50,
@@ -135,8 +126,6 @@ class _MovieListScreenState extends State<MovieListScreen> {
                   child: const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 30),
                 ),
                 const SizedBox(width: 16),
-                
-                // Text Info
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,8 +148,6 @@ class _MovieListScreenState extends State<MovieListScreen> {
                     ],
                   ),
                 ),
-                
-                // Arrow
                 Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey.shade600, size: 16),
               ],
             ),

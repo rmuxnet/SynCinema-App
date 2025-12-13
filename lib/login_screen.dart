@@ -44,9 +44,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = const Color(0xFF000000);
-    final cardColor = const Color(0xFF1F2937).withOpacity(0.6);
-    final inputColor = const Color(0xFF111827).withOpacity(0.5);
+    final bgColor = Colors.black;
+    final cardColor = Colors.black.withOpacity(0.8); 
+    final inputColor = Colors.black;
+    final borderColor = Colors.white.withOpacity(0.15);
     final accentGradient = const LinearGradient(colors: [Color(0xFF2563EB), Color(0xFF4F46E5)]);
 
     return Scaffold(
@@ -66,9 +67,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         BoxShadow(color: const Color(0xFF6366F1).withOpacity(0.3), blurRadius: 40, spreadRadius: 0),
                       ],
                     ),
-                    // --- YOUR LOGO GOES HERE ---
                     child: Image.asset(
-                      'assets/logo.png', // Ensure file exists in assets folder
+                      'assets/logo.png',
                       width: 120,
                       height: 120,
                       fit: BoxFit.contain,
@@ -85,24 +85,32 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     decoration: BoxDecoration(
                       color: cardColor,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: Colors.white.withOpacity(0.1)),
-                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20, offset: const Offset(0, 10))],
+                      border: Border.all(color: borderColor), 
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildLabel("Server Address"),
-                        _buildInput(controller: _ipController, hint: "192.168.1.x:17701", icon: Icons.wifi, inputColor: inputColor),
+                        _buildInput(controller: _ipController, hint: "192.168.1.x:17701", icon: Icons.wifi, inputColor: inputColor, borderColor: borderColor),
                         const SizedBox(height: 20),
                         _buildLabel("Username"),
-                        _buildInput(controller: _usernameController, hint: "Enter your username", icon: Icons.person_outline, inputColor: inputColor),
+                        _buildInput(controller: _usernameController, hint: "Enter your username", icon: Icons.person_outline, inputColor: inputColor, borderColor: borderColor),
                         const Padding(
                           padding: EdgeInsets.only(top: 8.0, left: 4.0),
                           child: Text("Ask your Host for the username", style: TextStyle(color: Colors.grey, fontSize: 12, fontStyle: FontStyle.italic)),
                         ),
                         const SizedBox(height: 20),
                         _buildLabel("Password"),
-                        _buildInput(controller: _passwordController, hint: "Enter your password", icon: Icons.lock_outline, inputColor: inputColor, isPassword: true, obscureText: _obscurePassword, onTogglePassword: () => setState(() => _obscurePassword = !_obscurePassword)),
+                        _buildInput(
+                          controller: _passwordController,
+                          hint: "Enter your password",
+                          icon: Icons.lock_outline,
+                          inputColor: inputColor,
+                          isPassword: true,
+                          obscureText: _obscurePassword,
+                          onTogglePassword: () => setState(() => _obscurePassword = !_obscurePassword),
+                          borderColor: borderColor,
+                        ),
                         const SizedBox(height: 16),
                         Row(
                           children: [
@@ -141,9 +149,22 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     return Padding(padding: const EdgeInsets.only(bottom: 8.0, left: 4.0), child: Text(text, style: const TextStyle(color: Color(0xFFD1D5DB), fontWeight: FontWeight.w500, fontSize: 14)));
   }
 
-  Widget _buildInput({required TextEditingController controller, required String hint, required IconData icon, required Color inputColor, bool isPassword = false, bool obscureText = false, VoidCallback? onTogglePassword}) {
+  Widget _buildInput({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+    required Color inputColor,
+    Color? borderColor,
+    bool isPassword = false,
+    bool obscureText = false,
+    VoidCallback? onTogglePassword,
+  }) {
     return Container(
-      decoration: BoxDecoration(color: inputColor, borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.grey.withOpacity(0.3))),
+      decoration: BoxDecoration(
+        color: inputColor, 
+        borderRadius: BorderRadius.circular(12), 
+        border: Border.all(color: Colors.white.withOpacity(0.15))
+      ),
       child: TextField(
         controller: controller,
         obscureText: obscureText,

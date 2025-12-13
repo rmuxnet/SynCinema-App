@@ -16,18 +16,15 @@ class VideoScreen extends StatefulWidget {
 }
 
 class _VideoScreenState extends State<VideoScreen> {
-  // Logic Controllers
   VideoPlayerController? _videoController;
   ChewieController? _chewieController;
   IO.Socket? socket;
   
-  // State
   bool _isSyncing = false;
   bool _isVideoInitialized = false;
   String _errorMessage = '';
   String _cookieHeader = '';
   
-  // Chat & Reaction Streams
   final List<Map<String, dynamic>> _messages = [];
   final StreamController<String> _reactionStreamController = StreamController<String>.broadcast();
 
@@ -75,16 +72,27 @@ class _VideoScreenState extends State<VideoScreen> {
       socket!.connect();
       socket!.onConnect((_) => socket!.emit('change_movie', {'movie': widget.movieFilename}));
       
-      // Video Sync
       socket!.on('play_video', (data) { if(_isVideoInitialized) { _handleRemoteSeek(data['time']); _handleRemotePlay(); }});
       socket!.on('pause_video', (data) { if(_isVideoInitialized) { _handleRemoteSeek(data['time']); _handleRemotePause(); }});
       socket!.on('seek_video', (data) => _handleRemoteSeek(data['time']));
       socket!.on('sync_state', (data) { if(data['current_time']!=null) _handleRemoteSeek(data['current_time']); if(data['is_playing']==true) _handleRemotePlay();});
       
-      // Chat & Reactions
       socket!.on('new_message', (data) => _addMessage(data));
       socket!.on('chat_history', (data) { if (data is List) for (var msg in data) _addMessage(msg); });
       socket!.on('new_reaction', (data) => _reactionStreamController.add(data['emoji']));
+
+      socket!.on('message_reaction_update', (data) {
+        if (!mounted) return;
+        setState(() {
+          for (var msg in _messages) {
+            if (msg['id'] == data['message_id']) {
+              msg['reactions'] = data['reactions'];
+              break;
+            }
+          }
+        });
+      });
+
     } catch (e) { print(e); }
   }
 
@@ -121,6 +129,10 @@ class _VideoScreenState extends State<VideoScreen> {
     socket!.emit('send_reaction', {'emoji': emoji, 'video_time': _videoController?.value.position.inSeconds ?? 0});
   }
 
+  void _onMessageReaction(String messageId, String emoji) {
+    socket!.emit('react_to_message', {'message_id': messageId, 'emoji': emoji});
+  }
+
   @override
   void dispose() {
     _videoController?.dispose();
@@ -151,6 +163,7 @@ class _VideoScreenState extends State<VideoScreen> {
       messages: _messages,
       onSendMessage: _onSendMessage,
       onSendReaction: _onSendReaction,
+      onMessageReaction: _onMessageReaction,
       cookieHeader: _cookieHeader,
     );
 

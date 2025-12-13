@@ -3,7 +3,6 @@ import 'api_service.dart';
 import 'login_screen.dart';
 
 void main() {
-  // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
   ApiService.init(); 
   runApp(const SyncinemaApp());
@@ -16,7 +15,19 @@ class SyncinemaApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Syncinema',
-      theme: ThemeData.dark(),
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Colors.black,
+        primaryColor: Colors.black,
+        cardColor: Colors.black,
+        dividerColor: Colors.white.withOpacity(0.15),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFF6366F1),
+          surface: Colors.black,
+          background: Colors.black,
+        ),
+        useMaterial3: true,
+      ),
       home: const LoginScreen(),
     );
   }

@@ -4,6 +4,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 
 class ApiService {
   static String baseUrl = '';
+  static String? currentUser;
   static final Dio _dio = Dio();
   static final CookieJar _cookieJar = CookieJar();
 
@@ -35,7 +36,11 @@ class ApiService {
         'username': username,
         'password': password,
       });
-      return response.data['status'] == 'success';
+      if (response.data['status'] == 'success') {
+        currentUser = username;
+        return true;
+      }
+      return false;
     } catch (e) {
       print('Login Error: $e');
       return false;
